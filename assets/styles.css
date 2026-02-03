@@ -1,1 +1,55 @@
 *{margin:0;padding:0;box-sizing:border-box}html{scroll-behavior:smooth}body{font-family:system-ui,-apple-system,sans-serif;background:#050505;color:#e2e8f0;overflow-x:hidden}body,html{width:100%;height:100%}img{max-width:100%;height:auto;display:block}body{overflow:hidden}body>nav,body>header,body>section,body>footer{opacity:0!important;pointer-events:none!important}#loading-screen{opacity:1!important;pointer-events:auto!important;display:flex!important;z-index:9999!important;transition:opacity .5s ease-out}body.content-ready>nav,body.content-ready>header,body.content-ready>section,body.content-ready>footer{opacity:1!important;pointer-events:auto!important;transition:opacity .5s ease-in}body.content-ready #loading-screen{opacity:0!important;pointer-events:none!important}body{font-family:'Inter',sans-serif;background-color:#050505;color:#e2e8f0;overflow-x:hidden;text-rendering:optimizeLegibility;-webkit-font-smoothing:antialiased}.bg-noise{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:50;opacity:.05;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='1'/%3E%3C/svg%3E")}.bg-grid-tech{background-size:40px 40px;background-image:linear-gradient(to right,rgba(6,182,212,.03) 1px,transparent 1px),linear-gradient(to bottom,rgba(6,182,212,.03) 1px,transparent 1px);mask-image:radial-gradient(circle at center,#000 40%,transparent 100%);-webkit-mask-image:radial-gradient(circle at center,#000 40%,transparent 100%);will-change:auto}.scanline{width:100%;height:100%;background:linear-gradient(to bottom,transparent 0%,rgba(34,211,238,.01) 50%,transparent 100%);background-size:100% 4px;animation:scan 15s linear infinite;position:absolute;pointer-events:none;will-change:transform}@keyframes scan{0%{transform:translateY(-100%)}100%{transform:translateY(100%)}}::selection{background-color:#22d3ee;color:#000}::-webkit-scrollbar{width:8px}::-webkit-scrollbar-track{background:#020617}::-webkit-scrollbar-thumb{background:#334155;border-radius:4px}::-webkit-scrollbar-thumb:hover{background:#475569}@keyframes fadeInSlideUp{from{opacity:0;transform:translate3d(0,20px,0)}to{opacity:1;transform:translate3d(0,0,0)}}.animate-in{animation:fadeInSlideUp .5s cubic-bezier(.16,1,.3,1) forwards;opacity:0;will-change:opacity,transform}@keyframes shimmer{0%{background-position:200% center}100%{background-position:-200% center}}.animate-text-shimmer{background-size:200% auto;animation:shimmer 6s linear infinite;will-change:background-position;contain:layout style paint}.glass-panel{background:rgba(10,10,10,.6);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border:1px solid rgba(34,211,238,.1);box-shadow:0 0 20px rgba(0,0,0,.5);contain:layout style paint}.glass-card-hover:hover{background:rgba(15,23,42,.8);border-color:rgba(34,211,238,.4);box-shadow:0 0 30px rgba(34,211,238,.15)}.text-gradient-cyan{background-clip:text;-webkit-background-clip:text;color:transparent;background-image:linear-gradient(90deg,#22d3ee,#3b82f6,#22d3ee)}@keyframes blink{0%,49%,100%{opacity:1}50%,99%{opacity:0}}.animate-blink{animation:blink 1s steps(1,start) infinite}@keyframes loading-bar{0%{width:0%}50%{width:80%}100%{width:100%}}.animate-loading-bar{animation:loading-bar 2s ease-in-out infinite}.btn-glow{position:relative;isolation:isolate}
+body {
+	background: linear-gradient(120deg, #23243a 0%, #1a1b2f 100%);
+	min-height: 100vh;
+	position: relative;
+	overflow-x: hidden;
+	animation: bgMove 12s ease-in-out infinite alternate;
+}
+
+body::before {
+	content: "";
+	position: fixed;
+	top: 0; left: 0; right: 0; bottom: 0;
+	z-index: 0;
+	pointer-events: none;
+	background:
+		repeating-linear-gradient(135deg, rgba(255,255,255,0.03) 0 2px, transparent 2px 40px),
+		repeating-linear-gradient(45deg, rgba(0,255,255,0.04) 0 1px, transparent 1px 60px);
+	opacity: 0.7;
+}
+
+@keyframes bgMove {
+	0% {
+		background-position: 0% 50%;
+	}
+	100% {
+		background-position: 100% 50%;
+	}
+}
+
+.bg-tech-premium {
+	position: relative;
+	background:
+		radial-gradient(120% 120% at 20% 10%, rgba(9, 18, 38, 0.85) 0%, rgba(4, 8, 18, 0.95) 55%, #020409 100%),
+		linear-gradient(120deg, #0b1020 0%, #05070f 100%);
+	animation: bgMove 14s ease-in-out infinite alternate;
+}
+
+.bg-tech-premium::before {
+	content: "";
+	position: absolute;
+	inset: 0;
+	pointer-events: none;
+	background:
+		repeating-linear-gradient(90deg, rgba(56, 189, 248, 0.06) 0 1px, transparent 1px 48px),
+		repeating-linear-gradient(0deg, rgba(34, 211, 238, 0.04) 0 1px, transparent 1px 56px);
+	opacity: 0.35;
+}
+
+/* Refuerzo visual de la cuadrícula tech */
+.bg-grid-tech {
+	background-image:
+		linear-gradient(to right, rgba(6, 182, 212, 0.16) 1px, transparent 1px),
+		linear-gradient(to bottom, rgba(6, 182, 212, 0.16) 1px, transparent 1px);
+}
