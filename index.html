@@ -237,7 +237,6 @@
         const checkTailwind = () => {
             if (window.tailwind || document.documentElement.classList.length > 0) {
                 tailwindReady = true;
-                console.log('Tailwind detected as ready');
             }
         };
 
@@ -258,17 +257,6 @@
                     nx32<span class="animate-blink">_</span>
                 </div>
             </div>
-
-            <!-- Loading Animation -->
-            <div class="flex items-center justify-center gap-2 mb-6">
-                <div class="w-2 h-2 bg-cyan-400 rounded-full animate-bounce" style="animation-delay: 0s;"></div>
-                <div class="w-2 h-2 bg-cyan-400 rounded-full animate-bounce" style="animation-delay: 0.2s;"></div>
-                <div class="w-2 h-2 bg-cyan-400 rounded-full animate-bounce" style="animation-delay: 0.4s;"></div>
-            </div>
-
-            <p class="text-slate-400 text-sm font-mono tracking-widest uppercase">
-                Inicializando infraestructura...
-            </p>
 
             <!-- Progress indicator -->
             <div class="mt-8 w-64 h-1 bg-slate-900/50 rounded-full overflow-hidden">
@@ -315,17 +303,6 @@
     <!-- Hero Section -->
     <header class="relative min-h-screen flex flex-col justify-center items-center container mx-auto px-6 z-10" style="contain: layout;">
         <div class="max-w-5xl mx-auto text-center pt-20">
-
-            <!-- Badge -->
-            <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-slate-900/80 border border-slate-700/50 text-cyan-400 text-xs font-mono mb-10 hover:border-cyan-500/50 transition-colors cursor-default backdrop-blur-sm animate-in" style="animation-delay: 0.1s; will-change: opacity, transform;">
-                <span class="relative flex h-2 w-2">
-                  <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-cyan-400 opacity-75" style="animation-duration: 1.5s;"></span>
-                  <span class="relative inline-flex rounded-full h-2 w-2 bg-cyan-500"></span>
-                </span>
-                <span class="opacity-80">nx32</span>
-                <span class="mx-1 text-slate-600">|</span>
-                <span class="font-bold text-cyan-300 animate-terminal">ONLINE</span>
-            </div>
 
             <!-- Main Title -->
             <h1 class="text-5xl md:text-7xl font-bold text-white mb-10 tracking-tight leading-tight animate-in" style="animation-delay: 0.1s; will-change: opacity, transform;">
@@ -512,8 +489,8 @@
                                 <span class="role-name text-lg font-bold block mb-1 text-white">CEO</span>
                                 <span class="text-xs text-slate-400 font-mono">VISIÓN & RENTABILIDAD</span>
                             </div>
-                            <div class="w-8 h-8 rounded-full bg-cyan-500/20 flex items-center justify-center">
-                                <i data-lucide="chevron-right" class="w-4 h-4 text-cyan-400"></i>
+                            <div class="icon-container w-8 h-8 rounded-full bg-cyan-500/20 flex items-center justify-center">
+                                <i data-lucide="chevron-right" class="icon-arrow w-4 h-4 text-cyan-400"></i>
                             </div>
                         </button>
 
@@ -522,8 +499,8 @@
                                 <span class="role-name text-lg font-bold block mb-1 text-slate-500 group-hover:text-slate-300">CTO</span>
                                 <span class="text-xs text-slate-600 font-mono group-hover:text-slate-500">TECNOLOGÍA & ESCALA</span>
                             </div>
-                            <div class="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center group-hover:bg-white/10">
-                                <i data-lucide="chevron-right" class="w-4 h-4 text-slate-600 group-hover:text-slate-400"></i>
+                            <div class="icon-container w-8 h-8 rounded-full bg-white/5 flex items-center justify-center group-hover:bg-white/10">
+                                <i data-lucide="chevron-right" class="icon-arrow w-4 h-4 text-slate-600 group-hover:text-slate-400"></i>
                             </div>
                         </button>
 
@@ -532,8 +509,8 @@
                                 <span class="role-name text-lg font-bold block mb-1 text-slate-500 group-hover:text-slate-300">CISO</span>
                                 <span class="text-xs text-slate-600 font-mono group-hover:text-slate-500">SEGURIDAD & COMPLIANCE</span>
                             </div>
-                            <div class="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center group-hover:bg-white/10">
-                                <i data-lucide="chevron-right" class="w-4 h-4 text-slate-600 group-hover:text-slate-400"></i>
+                            <div class="icon-container w-8 h-8 rounded-full bg-white/5 flex items-center justify-center group-hover:bg-white/10">
+                                <i data-lucide="chevron-right" class="icon-arrow w-4 h-4 text-slate-600 group-hover:text-slate-400"></i>
                             </div>
                         </button>
                     </div>
@@ -743,16 +720,40 @@
 
             // Use single class toggle for better performance
             const updateButton = (btn, isActive) => {
+                const roleName = btn.querySelector('.role-name');
+                const iconContainer = btn.querySelector('.icon-container');
+                const iconArrow = btn.querySelector('.icon-arrow');
+
                 if (isActive) {
-                    btn.classList.add('active-tab');
-                    btn.querySelector('.role-name').classList.add('text-white');
-                    btn.querySelector('div:last-child').classList.add('bg-cyan-500/20');
-                    btn.querySelector('svg').classList.add('text-cyan-400');
+                    btn.classList.add('active-tab', 'bg-white/5', 'border-cyan-500/50', 'shadow-[0_0_30px_rgba(6,182,212,0.1)]', 'backdrop-blur-sm');
+                    btn.classList.remove('border-transparent');
+                    if (roleName) {
+                        roleName.classList.remove('text-slate-500');
+                        roleName.classList.add('text-white');
+                    }
+                    if (iconContainer) {
+                        iconContainer.classList.remove('bg-white/5');
+                        iconContainer.classList.add('bg-cyan-500/20');
+                    }
+                    if (iconArrow) {
+                        iconArrow.classList.remove('text-slate-600');
+                        iconArrow.classList.add('text-cyan-400');
+                    }
                 } else {
-                    btn.classList.remove('active-tab');
-                    btn.querySelector('.role-name').classList.remove('text-white');
-                    btn.querySelector('div:last-child').classList.remove('bg-cyan-500/20');
-                    btn.querySelector('svg').classList.remove('text-cyan-400');
+                    btn.classList.remove('active-tab', 'bg-white/5', 'border-cyan-500/50', 'shadow-[0_0_30px_rgba(6,182,212,0.1)]', 'backdrop-blur-sm');
+                    btn.classList.add('border-transparent');
+                    if (roleName) {
+                        roleName.classList.remove('text-white');
+                        roleName.classList.add('text-slate-500');
+                    }
+                    if (iconContainer) {
+                        iconContainer.classList.remove('bg-cyan-500/20');
+                        iconContainer.classList.add('bg-white/5');
+                    }
+                    if (iconArrow) {
+                        iconArrow.classList.remove('text-cyan-400');
+                        iconArrow.classList.add('text-slate-600');
+                    }
                 }
             };
 
@@ -792,7 +793,6 @@
         // Function to show content and hide loading
         const showContent = () => {
             if (document.body.classList.contains('content-ready')) return; // Already done
-            console.log('Showing content');
             document.body.classList.add('content-ready');
             document.body.style.overflow = 'auto';
             const loadingScreen = document.getElementById('loading-screen');
@@ -807,7 +807,6 @@
 
         // Ensure icons render and show content after page fully loads
         window.addEventListener('load', () => {
-            console.log('Page load complete');
             if (window.lucide && typeof window.lucide.createIcons === 'function') {
                 window.lucide.createIcons();
             }
@@ -816,11 +815,9 @@
 
         // Also try to show on DOMContentLoaded if Tailwind is ready
         document.addEventListener('DOMContentLoaded', () => {
-            console.log('DOM ready');
             // Give Tailwind time to apply styles
             setTimeout(() => {
                 if (tailwindReady || window.tailwind) {
-                    console.log('Tailwind ready, showing content');
                     showContent();
                 }
             }, 1000);
@@ -829,11 +826,9 @@
         // Fallback: if page takes too long, show content anyway (max 6 seconds)
         setTimeout(() => {
             if (!document.body.classList.contains('content-ready')) {
-                console.log('Loading timeout: showing content anyway');
                 showContent();
             }
         }, 6000);
     </script>
 </body>
-</html>
 </html>
