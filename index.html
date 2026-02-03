@@ -1,0 +1,654 @@
+<!DOCTYPE html>
+<html lang="es" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>nx32 | Edge-Native Infrastructure</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <style>
+        /* Custom Font Setup */
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;700&display=swap');
+
+        :root {
+            --primary-glow: conic-gradient(from 180deg at 50% 50%, #164e63 0deg, #0891b2 180deg, #164e63 360deg);
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #000;
+            color: #e2e8f0;
+            overflow-x: hidden;
+        }
+
+        .font-mono {
+            font-family: 'JetBrains Mono', monospace !important;
+        }
+
+        /* Background Grid Pattern */
+        .bg-grid {
+            background-size: 40px 40px;
+            background-image: linear-gradient(to right, rgba(255, 255, 255, 0.05) 1px, transparent 1px),
+                              linear-gradient(to bottom, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+            mask-image: linear-gradient(to bottom, black 40%, transparent 100%);
+            -webkit-mask-image: linear-gradient(to bottom, black 40%, transparent 100%);
+        }
+
+        /* Selection Color */
+        ::selection {
+            background-color: #22d3ee; /* cyan-400 */
+            color: #000;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #020617;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #334155;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #475569;
+        }
+
+        /* Animations */
+        @keyframes fadeInSlideUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-in { animation: fadeInSlideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+        .animate-float { animation: float 6s ease-in-out infinite; }
+
+        /* Subtle Shimmer for Text */
+        @keyframes shimmer {
+            0% { background-position: 200% center; }
+            100% { background-position: -200% center; }
+        }
+
+        .animate-text-shimmer {
+            background-size: 200% auto;
+            animation: shimmer 8s linear infinite;
+        }
+
+        /* Utilities */
+        .glass-panel {
+            background: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .glass-card-hover:hover {
+            background: rgba(15, 23, 42, 0.8);
+            border-color: rgba(34, 211, 238, 0.3); /* cyan border */
+            box-shadow: 0 0 30px rgba(34, 211, 238, 0.1);
+        }
+
+        /* Premium Gradient Text */
+        .text-gradient-cyan {
+            background-clip: text;
+            -webkit-background-clip: text;
+            color: transparent;
+            background-image: linear-gradient(90deg, #22d3ee, #3b82f6, #22d3ee);
+        }
+
+        /* Subtle Terminal Blink for ONLINE badge */
+        @keyframes terminal-blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+        .animate-terminal {
+            animation: terminal-blink 2s ease-in-out infinite;
+        }
+
+        /* Button Glow Effect */
+        .btn-glow {
+            position: relative;
+        }
+        .btn-glow::before {
+            content: '';
+            position: absolute;
+            top: -2px; left: -2px; right: -2px; bottom: -2px;
+            background: linear-gradient(45deg, #06b6d4, #3b82f6, #06b6d4);
+            z-index: -1;
+            border-radius: 9999px;
+            background-size: 200%;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        .btn-glow:hover::before {
+            opacity: 0.7;
+            animation: moveGradient 3s linear infinite;
+        }
+        @keyframes moveGradient {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+    </style>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        slate: {
+                            850: '#151e2e',
+                            900: '#0f172a',
+                            950: '#020617',
+                        },
+                        cyan: {
+                            450: '#00d0ff' // Custom vibrant cyan
+                        }
+                    },
+                    boxShadow: {
+                        'neon': '0 0 20px rgba(34, 211, 238, 0.3)',
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-black min-h-screen selection:bg-cyan-500/30">
+
+    <!-- Background Elements -->
+    <div class="fixed inset-0 z-0 pointer-events-none">
+        <div class="absolute inset-0 bg-grid opacity-30"></div>
+        <!-- Ambient Light Orbs -->
+        <div class="absolute top-[-10%] left-[-10%] w-[500px] h-[500px] bg-cyan-500/20 rounded-full blur-[128px] animate-pulse"></div>
+        <div class="absolute bottom-[10%] right-[-5%] w-[400px] h-[400px] bg-blue-600/20 rounded-full blur-[128px]"></div>
+    </div>
+
+    <!-- Navigation (Logo Only) -->
+    <nav class="absolute top-0 left-0 w-full z-50 py-8">
+        <div class="container mx-auto px-6">
+            <div class="flex items-center gap-2">
+                <span class="text-xl font-mono font-bold text-cyan-400 tracking-wider select-none">
+                    nx32<span class="animate-pulse">_</span>
+                </span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <header class="relative min-h-screen flex flex-col justify-center items-center container mx-auto px-6 z-10">
+        <div class="max-w-5xl mx-auto text-center pt-20">
+
+            <!-- Badge -->
+            <h1 class="text-5xl md:text-7xl font-bold text-white mb-10 tracking-tight leading-tight animate-in" style="animation-delay: 0.2s">
+                <span class="relative inline-block text-gradient-cyan animate-text-shimmer">
+                    Edge-Native
+                    <!-- Underline decoration -->
+                    <svg class="absolute w-full h-3 -bottom-1 left-0 text-cyan-500/40" viewBox="0 0 100 10" preserveAspectRatio="none">
+                        <path d="M0 5 Q 50 10 100 5" stroke="currentColor" stroke-width="2" fill="none" />
+                    </svg>
+                </span>
+                <span class="text-slate-600 mx-2">&</span>
+                <span class="relative inline-block text-gradient-cyan animate-text-shimmer">AI-First</span>
+                <br />
+                Architecture
+            </h1>
+
+            <p class="text-lg md:text-3xl text-slate-300 mb-12 max-w-4xl mx-auto leading-relaxed animate-in font-light" style="animation-delay: 0.3s">
+                Superioridad técnica para la <span class="text-white font-medium">élite digital</span>.
+                <br />
+                <span class="text-base md:text-xl text-slate-500 mt-4 block">
+                    Rendimiento extremo. Seguridad inquebrantable.
+                </span>
+            </p>
+
+            <!-- CTA Buttons -->
+            <div class="flex flex-col md:flex-row items-center justify-center gap-6 animate-in" style="animation-delay: 0.4s">
+                <button onclick="document.getElementById('contact').scrollIntoView()" class="btn-glow bg-white text-black px-8 py-4 rounded-full font-bold text-lg flex items-center gap-2 hover:scale-105 transition-transform active:scale-95 shadow-[0_0_20px_rgba(255,255,255,0.3)]">
+                    Agendar Briefing Privado
+                    <i data-lucide="lock" class="w-4 h-4 text-slate-900"></i>
+                </button>
+                <button onclick="document.getElementById('platform').scrollIntoView()" class="px-8 py-4 rounded-full font-medium text-slate-300 border border-slate-700 hover:border-cyan-500 hover:text-white hover:bg-slate-800/50 transition-all flex items-center gap-2 group backdrop-blur-sm">
+                    Explorar la Arquitectura
+                    <i data-lucide="chevron-down" class="w-4 h-4 text-slate-500 group-hover:text-cyan-400 transition-colors"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Scroll Indicator -->
+        <div class="absolute bottom-10 animate-bounce text-slate-500">
+            <i data-lucide="chevron-down" class="w-6 h-6"></i>
+        </div>
+    </header>
+
+    <!-- Value Proposition (Bento Grid Style) -->
+    <section id="platform" class="py-32 relative z-10">
+        <div class="container mx-auto px-6">
+            <div class="mb-20 text-center">
+                <h2 class="text-4xl md:text-5xl font-bold text-white mb-6">El Stack Definitivo</h2>
+                <p class="text-slate-400 text-lg max-w-3xl mx-auto">
+                    Frontend, Backend e Infraestructura en perfecta sincronía. Un ecosistema unificado para construir, asegurar y escalar aplicaciones globales sin fricción.
+                </p>
+            </div>
+
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-7xl mx-auto">
+
+                <!-- Card 1: Velocidad Extrema -->
+                <div class="glass-panel glass-card-hover p-8 rounded-2xl transition-all duration-500 group relative overflow-hidden flex flex-col h-full text-left">
+                    <div class="absolute inset-0 bg-gradient-to-br from-cyan-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+
+                    <div class="w-10 h-10 bg-slate-800/50 rounded-lg flex items-center justify-center mb-6 border border-white/10 group-hover:border-cyan-500/50 transition-all duration-300">
+                        <i data-lucide="zap" class="w-5 h-5 text-cyan-400"></i>
+                    </div>
+
+                    <h3 class="text-xl font-bold text-white mb-3">Velocidad Extrema</h3>
+                    <p class="text-slate-400 text-sm leading-relaxed flex-grow">
+                        Operamos en el Edge, eliminando intermediarios. Comunicación entre servicios en sub-milisegundos.
+                    </p>
+
+                    <div class="mt-8 pt-4 border-t border-white/5">
+                        <p class="text-xs text-cyan-500/90 font-mono tracking-wider">Zero-Latency Fabric</p>
+                    </div>
+                </div>
+
+                <!-- Card 2: Dark Services -->
+                <div class="glass-panel glass-card-hover p-8 rounded-2xl transition-all duration-500 group relative overflow-hidden flex flex-col h-full text-left">
+                    <div class="absolute inset-0 bg-gradient-to-br from-cyan-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+
+                    <div class="w-10 h-10 bg-slate-800/50 rounded-lg flex items-center justify-center mb-6 border border-white/10 group-hover:border-cyan-500/50 transition-all duration-300">
+                        <i data-lucide="shield" class="w-5 h-5 text-cyan-400"></i>
+                    </div>
+
+                    <h3 class="text-xl font-bold text-white mb-3">Dark Services</h3>
+                    <p class="text-slate-400 text-sm leading-relaxed flex-grow">
+                        Tu lógica de negocio y datos vitales son invisibles para el internet público. Sin IP pública.
+                    </p>
+
+                    <div class="mt-8 pt-4 border-t border-white/5">
+                        <p class="text-xs text-cyan-500/90 font-mono tracking-wider">Arquitectura Invisible</p>
+                    </div>
+                </div>
+
+                <!-- Card 3: Zero-Trust Real -->
+                <div class="glass-panel glass-card-hover p-8 rounded-2xl transition-all duration-500 group relative overflow-hidden flex flex-col h-full text-left">
+                    <div class="absolute inset-0 bg-gradient-to-br from-cyan-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+
+                    <div class="w-10 h-10 bg-slate-800/50 rounded-lg flex items-center justify-center mb-6 border border-white/10 group-hover:border-cyan-500/50 transition-all duration-300">
+                        <i data-lucide="lock" class="w-5 h-5 text-cyan-400"></i>
+                    </div>
+
+                    <h3 class="text-xl font-bold text-white mb-3">Zero-Trust Real</h3>
+                    <p class="text-slate-400 text-sm leading-relaxed flex-grow">
+                        Nadie entra sin validación criptográfica absoluta. No es una buzzword, es nuestra arquitectura.
+                    </p>
+
+                    <div class="mt-8 pt-4 border-t border-white/5">
+                        <p class="text-xs text-cyan-500/90 font-mono tracking-wider">JWT + Validación Edge</p>
+                    </div>
+                </div>
+
+                <!-- Card 4: AI-First -->
+                <div class="glass-panel glass-card-hover p-8 rounded-2xl transition-all duration-500 group relative overflow-hidden flex flex-col h-full text-left">
+                    <div class="absolute inset-0 bg-gradient-to-br from-cyan-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+
+                    <div class="w-10 h-10 bg-slate-800/50 rounded-lg flex items-center justify-center mb-6 border border-white/10 group-hover:border-cyan-500/50 transition-all duration-300">
+                        <i data-lucide="brain" class="w-5 h-5 text-cyan-400"></i>
+                    </div>
+
+                    <h3 class="text-xl font-bold text-white mb-3">AI-First</h3>
+                    <p class="text-slate-400 text-sm leading-relaxed flex-grow">
+                        No agregamos IA; estamos construidos para la IA. Flujos de trabajo inteligentes desde el día uno.
+                    </p>
+
+                    <div class="mt-8 pt-4 border-t border-white/5">
+                        <p class="text-xs text-cyan-500/90 font-mono tracking-wider">Arquitectura Monorepo</p>
+                    </div>
+                </div>
+
+                <!-- Card 5: Rust + WebAssembly -->
+                <div class="glass-panel glass-card-hover p-8 rounded-2xl transition-all duration-500 group relative overflow-hidden flex flex-col h-full text-left">
+                    <div class="absolute inset-0 bg-gradient-to-br from-cyan-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+
+                    <div class="w-10 h-10 bg-slate-800/50 rounded-lg flex items-center justify-center mb-6 border border-white/10 group-hover:border-cyan-500/50 transition-all duration-300">
+                        <i data-lucide="server" class="w-5 h-5 text-cyan-400"></i>
+                    </div>
+
+                    <h3 class="text-xl font-bold text-white mb-3">Rust + WebAssembly</h3>
+                    <p class="text-slate-400 text-sm leading-relaxed flex-grow">
+                        El lenguaje más rápido y seguro. Sin problemas de memoria, sin cuellos de botella legacy.
+                    </p>
+
+                    <div class="mt-8 pt-4 border-t border-white/5">
+                        <p class="text-xs text-cyan-500/90 font-mono tracking-wider">V8 Isolates Sandboxed</p>
+                    </div>
+                </div>
+
+                <!-- Card 6: Service Bindings -->
+                <div class="glass-panel glass-card-hover p-8 rounded-2xl transition-all duration-500 group relative overflow-hidden flex flex-col h-full text-left">
+                    <div class="absolute inset-0 bg-gradient-to-br from-cyan-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+
+                    <div class="w-10 h-10 bg-slate-800/50 rounded-lg flex items-center justify-center mb-6 border border-white/10 group-hover:border-cyan-500/50 transition-all duration-300">
+                        <i data-lucide="terminal" class="w-5 h-5 text-cyan-400"></i>
+                    </div>
+
+                    <h3 class="text-xl font-bold text-white mb-3">Service Bindings</h3>
+                    <p class="text-slate-400 text-sm leading-relaxed flex-grow">
+                        Comunicación interna ultrasegura vía RPC. Como una línea roja directa entre departamentos.
+                    </p>
+
+                    <div class="mt-8 pt-4 border-t border-white/5">
+                        <p class="text-xs text-cyan-500/90 font-mono tracking-wider">Sub-ms Latency</p>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- Interactive Role Section -->
+    <section class="py-32 relative overflow-hidden">
+        <div class="absolute inset-0 bg-slate-950/80"></div>
+        <div class="container mx-auto px-6 relative z-10 max-w-6xl">
+
+            <div class="flex flex-col lg:flex-row gap-16 items-start">
+
+                <!-- Left: Navigation -->
+                <div class="w-full lg:w-1/3">
+                    <h3 class="text-xs font-mono text-cyan-500 uppercase tracking-[0.2em] mb-8 flex items-center gap-2">
+                        <span class="w-8 h-[1px] bg-cyan-500"></span>
+                        Perspectiva Ejecutiva
+                    </h3>
+
+                    <div class="space-y-4">
+                        <button class="role-tab-btn w-full text-left p-5 rounded-xl border transition-all duration-300 flex items-center justify-between group active-tab bg-white/5 border-cyan-500/50 shadow-[0_0_30px_rgba(6,182,212,0.1)] backdrop-blur-sm" data-role="CEO">
+                            <div>
+                                <span class="role-name text-lg font-bold block mb-1 text-white">CEO</span>
+                                <span class="text-xs text-slate-400 font-mono">VISIÓN & RENTABILIDAD</span>
+                            </div>
+                            <div class="w-8 h-8 rounded-full bg-cyan-500/20 flex items-center justify-center">
+                                <i data-lucide="chevron-right" class="w-4 h-4 text-cyan-400"></i>
+                            </div>
+                        </button>
+
+                        <button class="role-tab-btn w-full text-left p-5 rounded-xl border border-transparent transition-all duration-300 flex items-center justify-between group hover:bg-white/5 hover:border-white/10" data-role="CTO">
+                            <div>
+                                <span class="role-name text-lg font-bold block mb-1 text-slate-500 group-hover:text-slate-300">CTO</span>
+                                <span class="text-xs text-slate-600 font-mono group-hover:text-slate-500">TECNOLOGÍA & ESCALA</span>
+                            </div>
+                            <div class="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center group-hover:bg-white/10">
+                                <i data-lucide="chevron-right" class="w-4 h-4 text-slate-600 group-hover:text-slate-400"></i>
+                            </div>
+                        </button>
+
+                        <button class="role-tab-btn w-full text-left p-5 rounded-xl border border-transparent transition-all duration-300 flex items-center justify-between group hover:bg-white/5 hover:border-white/10" data-role="CISO">
+                            <div>
+                                <span class="role-name text-lg font-bold block mb-1 text-slate-500 group-hover:text-slate-300">CISO</span>
+                                <span class="text-xs text-slate-600 font-mono group-hover:text-slate-500">SEGURIDAD & COMPLIANCE</span>
+                            </div>
+                            <div class="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center group-hover:bg-white/10">
+                                <i data-lucide="chevron-right" class="w-4 h-4 text-slate-600 group-hover:text-slate-400"></i>
+                            </div>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Right: Content Display (Mac Window Style) -->
+                <div class="w-full lg:w-2/3">
+                    <div class="glass-panel rounded-2xl border border-white/10 overflow-hidden relative min-h-[400px]">
+                        <!-- Window Controls -->
+                        <div class="h-10 border-b border-white/5 bg-white/5 flex items-center px-4 gap-2">
+                            <div class="w-3 h-3 rounded-full bg-red-500/20 border border-red-500/50"></div>
+                            <div class="w-3 h-3 rounded-full bg-yellow-500/20 border border-yellow-500/50"></div>
+                            <div class="w-3 h-3 rounded-full bg-green-500/20 border border-green-500/50"></div>
+                        </div>
+
+                        <div id="role-content-container" class="p-10 md:p-14 flex flex-col justify-center h-full animate-in">
+                            <div class="flex items-start gap-6 mb-8">
+                                <div id="role-icon-container" class="p-4 bg-gradient-to-br from-cyan-500/20 to-blue-500/10 rounded-xl border border-white/10 shadow-lg">
+                                    <i data-lucide="globe" class="w-8 h-8 text-cyan-400"></i>
+                                </div>
+                                <div>
+                                    <h3 id="role-title" class="text-3xl font-bold text-white mb-2">Time-to-Market Instantáneo</h3>
+                                    <div class="h-1 w-20 bg-gradient-to-r from-cyan-500 to-transparent rounded-full"></div>
+                                </div>
+                            </div>
+
+                            <p id="role-desc" class="text-xl text-slate-300 mb-10 leading-relaxed font-light">
+                                "nx32 elimina la deuda técnica antes de que exista. Lance productos globales instantáneamente y reduzca costos operativos (OpEx) drásticamente gracias a la eficiencia serverless."
+                            </p>
+
+                            <div class="flex items-center gap-4">
+                                <div class="px-4 py-2 bg-cyan-500/10 border border-cyan-500/20 rounded-lg flex items-center gap-3 text-cyan-400 font-mono text-sm">
+                                    <i data-lucide="activity" class="w-4 h-4"></i>
+                                    <span id="role-stat" class="font-bold">40% Reducción de TCO</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Decorative glow -->
+                        <div class="absolute bottom-0 right-0 w-64 h-64 bg-cyan-500/10 blur-[80px] rounded-full pointer-events-none"></div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- Dictionary & Visual -->
+    <section class="py-32 container mx-auto px-6 max-w-6xl">
+        <div class="grid md:grid-cols-2 gap-20 items-center">
+            <div>
+                <h2 class="text-3xl font-bold text-white mb-8 flex items-center gap-3">
+                    <i data-lucide="book-open" class="text-cyan-500"></i>
+                    Diccionario Ejecutivo
+                </h2>
+
+                <div class="space-y-4">
+                    <!-- Item -->
+                    <div class="group p-4 hover:bg-white/5 rounded-xl transition-all cursor-default border border-transparent hover:border-white/5">
+                        <span class="text-cyan-400 font-mono text-xs uppercase tracking-wider mb-1 block">Infrastructure</span>
+                        <div class="flex justify-between items-end">
+                            <span class="text-white font-bold text-lg">Edge-Native</span>
+                            <span class="text-slate-500 text-xs font-mono opacity-0 group-hover:opacity-100 transition-opacity">DEF.01</span>
+                        </div>
+                        <p class="text-slate-400 text-sm mt-2 group-hover:text-slate-300 transition-colors">
+                            Tu aplicación vive en cientos de servidores globales, físicamente cerca de cada cliente.
+                        </p>
+                    </div>
+                     <!-- Item -->
+                     <div class="group p-4 hover:bg-white/5 rounded-xl transition-all cursor-default border border-transparent hover:border-white/5">
+                        <span class="text-cyan-400 font-mono text-xs uppercase tracking-wider mb-1 block">Language</span>
+                        <div class="flex justify-between items-end">
+                            <span class="text-white font-bold text-lg">Rust / WASM</span>
+                            <span class="text-slate-500 text-xs font-mono opacity-0 group-hover:opacity-100 transition-opacity">DEF.02</span>
+                        </div>
+                        <p class="text-slate-400 text-sm mt-2 group-hover:text-slate-300 transition-colors">
+                            Ingeniería Fórmula 1. Máxima potencia computacional con mínimo consumo de recursos.
+                        </p>
+                    </div>
+                     <!-- Item -->
+                     <div class="group p-4 hover:bg-white/5 rounded-xl transition-all cursor-default border border-transparent hover:border-white/5">
+                        <span class="text-cyan-400 font-mono text-xs uppercase tracking-wider mb-1 block">Network</span>
+                        <div class="flex justify-between items-end">
+                            <span class="text-white font-bold text-lg">Service Bindings</span>
+                            <span class="text-slate-500 text-xs font-mono opacity-0 group-hover:opacity-100 transition-opacity">DEF.03</span>
+                        </div>
+                        <p class="text-slate-400 text-sm mt-2 group-hover:text-slate-300 transition-colors">
+                            Comunicación interna ultrasegura; una línea directa y aislada entre departamentos.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Image Placeholder -->
+            <div class="relative h-[500px] bg-[#020617] rounded-3xl border border-white/10 flex items-center justify-center overflow-hidden shadow-2xl border-dashed border-slate-700/50 group hover:border-cyan-500/30 transition-colors">
+                <!-- Background Grid (Subtle) -->
+                <div class="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.02)_1px,transparent_1px)] bg-[size:40px_40px]"></div>
+
+                <div class="text-center z-10">
+                    <div class="w-20 h-20 bg-slate-800/50 rounded-2xl flex items-center justify-center mx-auto mb-6 border border-white/5 group-hover:border-cyan-500/50 transition-colors">
+                        <i data-lucide="image" class="w-8 h-8 text-slate-600 group-hover:text-cyan-400 transition-colors"></i>
+                    </div>
+                    <p class="text-slate-500 font-mono text-sm tracking-widest uppercase group-hover:text-slate-300 transition-colors">Visualización de Arquitectura</p>
+                    <p class="text-slate-600 text-xs mt-2 font-mono">Espacio reservado para activo gráfico</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section id="contact" class="py-40 relative overflow-hidden">
+        <!-- Radial Gradient Background -->
+        <div class="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(22,78,99,0.5),transparent_70%)] opacity-60"></div>
+
+        <div class="container mx-auto px-6 relative z-10 text-center max-w-4xl">
+            <h2 class="text-5xl md:text-7xl font-bold text-white mb-8 tracking-tight">
+                No compitas. <span class="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-500">Domina.</span>
+            </h2>
+            <p class="text-xl text-slate-400 mb-12 max-w-2xl mx-auto font-light">
+                Con nx32, transforma tu capacidad tecnológica para siempre.
+            </p>
+
+            <div class="flex flex-col items-center gap-6">
+                <button class="group relative px-12 py-5 bg-white text-black rounded-full font-bold text-lg overflow-hidden shadow-[0_0_50px_rgba(255,255,255,0.2)] hover:shadow-[0_0_80px_rgba(6,182,212,0.4)] transition-shadow duration-500">
+                    <span class="relative z-10 flex items-center gap-2">
+                        Agendar Sesión Estratégica <i data-lucide="arrow-right" class="w-5 h-5 group-hover:translate-x-1 transition-transform"></i>
+                    </span>
+                    <div class="absolute inset-0 bg-gradient-to-r from-cyan-200 to-white opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                </button>
+                <span class="text-slate-500 text-xs font-mono uppercase tracking-widest">Acceso exclusivo para partners enterprise</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-black border-t border-white/10 py-16">
+        <div class="container mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-8">
+            <div class="flex flex-col gap-4">
+                <div class="flex items-center gap-2">
+                    <div class="w-6 h-6 bg-slate-800 rounded flex items-center justify-center font-bold text-white text-xs">n</div>
+                    <span class="text-xl font-bold text-slate-400 tracking-tight">nx32 systems</span>
+                </div>
+                <div class="text-slate-600 text-sm max-w-xs">
+                    Arquitectura de infraestructura de próxima generación para entidades de alto rendimiento.
+                </div>
+            </div>
+
+            <div class="flex gap-8">
+                <a href="#" class="text-slate-500 hover:text-cyan-400 transition-colors"><i data-lucide="github" class="w-5 h-5"></i></a>
+                <a href="#" class="text-slate-500 hover:text-cyan-400 transition-colors"><i data-lucide="twitter" class="w-5 h-5"></i></a>
+                <a href="#" class="text-slate-500 hover:text-cyan-400 transition-colors"><i data-lucide="linkedin" class="w-5 h-5"></i></a>
+            </div>
+        </div>
+        <div class="container mx-auto px-6 mt-16 pt-8 border-t border-white/5 flex flex-col md:flex-row justify-between text-xs text-slate-700 font-mono">
+            <div>© 2024 nx32 Infrastructure. All rights reserved.</div>
+            <div class="flex gap-4 mt-4 md:mt-0">
+                <span>PRIVACY POLICY</span>
+                <span>TERMS OF SERVICE</span>
+                <span class="text-cyan-900">SYSTEM STATUS: ONLINE</span>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript Logic -->
+    <script>
+        // 1. Initialize Icons
+        lucide.createIcons();
+
+        // 2. Data for Roles
+        // ... (existing role logic) ...
+        const roleData = {
+            CEO: {
+                title: "Time-to-Market Instantáneo",
+                desc: "nx32 elimina la deuda técnica antes de que exista. Lance productos globales instantáneamente y reduzca costos operativos (OpEx) drásticamente gracias a la eficiencia serverless.",
+                stat: "40% Reducción de TCO",
+                icon: "globe"
+            },
+            CTO: {
+                title: "Ingeniería en Rust & WASM",
+                desc: "Olvide los problemas de memoria y los cuellos de botella legacy. Un sistema tipado, seguro y distribuido globalmente. La infraestructura que Google desearía tener internamente.",
+                stat: "<5ms Latencia Global",
+                icon: "cpu"
+            },
+            CISO: {
+                title: "Zero-Trust & Dark Services",
+                desc: "Nuestros servicios backend no tienen IP pública. Todo pasa por un Gateway estricto con validación criptográfica. Reduzca su superficie de ataque a cero absoluto.",
+                stat: "100% Aislamiento de Red",
+                icon: "shield"
+            }
+        };
+
+        // 3. Tab Switching Logic
+        // ... (existing tab logic) ...
+        const buttons = document.querySelectorAll('.role-tab-btn');
+        const container = document.getElementById('role-content-container');
+        const roleTitle = document.getElementById('role-title');
+        const roleDesc = document.getElementById('role-desc');
+        const roleStat = document.getElementById('role-stat');
+        const roleIconContainer = document.getElementById('role-icon-container');
+
+        buttons.forEach(btn => {
+            btn.addEventListener('click', () => {
+                // Update Buttons Styles
+                buttons.forEach(b => {
+                    b.classList.remove('active-tab', 'bg-white/5', 'border-cyan-500/50', 'shadow-[0_0_30px_rgba(6,182,212,0.1)]', 'backdrop-blur-sm');
+                    b.classList.add('border-transparent', 'hover:bg-white/5', 'hover:border-white/10');
+
+                    b.querySelector('.role-name').classList.remove('text-white');
+                    b.querySelector('.role-name').classList.add('text-slate-500');
+
+                    const iconDiv = b.querySelector('div:last-child');
+                    iconDiv.classList.remove('bg-cyan-500/20');
+                    iconDiv.classList.add('bg-white/5');
+
+                    const iconSvg = iconDiv.querySelector('svg');
+                    iconSvg.classList.remove('text-cyan-400');
+                    iconSvg.classList.add('text-slate-600');
+                });
+
+                // Set Active Style
+                btn.classList.remove('border-transparent', 'hover:bg-white/5', 'hover:border-white/10');
+                btn.classList.add('active-tab', 'bg-white/5', 'border-cyan-500/50', 'shadow-[0_0_30px_rgba(6,182,212,0.1)]', 'backdrop-blur-sm');
+
+                btn.querySelector('.role-name').classList.remove('text-slate-500');
+                btn.querySelector('.role-name').classList.add('text-white');
+
+                const activeIconDiv = btn.querySelector('div:last-child');
+                activeIconDiv.classList.remove('bg-white/5');
+                activeIconDiv.classList.add('bg-cyan-500/20');
+
+                const activeIconSvg = activeIconDiv.querySelector('svg');
+                activeIconSvg.classList.remove('text-slate-600');
+                activeIconSvg.classList.add('text-cyan-400');
+
+                // Update Content
+                const role = btn.dataset.role;
+                const data = roleData[role];
+
+                // Animation Reset
+                container.classList.remove('animate-in');
+                void container.offsetWidth; // trigger reflow
+                container.classList.add('animate-in');
+
+                roleTitle.textContent = data.title;
+                roleDesc.textContent = `"${data.desc}"`;
+                roleStat.textContent = data.stat;
+
+                // Securely update icon
+                if(roleIconContainer) {
+                    roleIconContainer.innerHTML = `<i data-lucide="${data.icon}" class="w-8 h-8 text-cyan-400"></i>`;
+                    lucide.createIcons();
+                }
+            });
+        });
+
+    </script>
+</body>
+</html>
